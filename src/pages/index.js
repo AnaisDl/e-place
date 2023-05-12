@@ -5,6 +5,7 @@ import { calculateLayout } from "./utils";
 import * as streams from "../utils/streams";
 import { connectStream } from "../utils/socket-communication";
 import { getCanvas, getConfig } from "../utils/api-communication";
+import { decodePixels } from "../utils/conversion";
 
 // Initialize the layout
 calculateLayout();
@@ -22,3 +23,4 @@ console.log("Config: ", config);
 // Get canvas
 const canvas = (await getCanvas())["data"]["pixels"];
 console.log("Canvas: ", canvas);
+console.log(decodePixels(canvas));
