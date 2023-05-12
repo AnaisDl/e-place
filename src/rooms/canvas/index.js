@@ -32,12 +32,23 @@ export async function displayCanvas(config) {
 }
 
 export async function getPixelInfo(posX, posY) {
-    const info = await axios.get(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`, {
+    const info = (await axios.get(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`, {
         params: {
             posX: posX,
             posY: posY
         }
-    });
+    }))["data"];
+    console.log(info);
 
-    return info;
+    const date = new Date(info["timestamp"]).toLocaleDateString("fr-FR");
+    const time = new Date(info["timestamp"]).toLocaleTimeString("fr-FR");
+
+    const studentInfo = (await axios.get(`${import.meta.env.VITE_URL}/api/students/${info["placedByUid"]}`))["data"];
+    console.log("Student info: ", studentInfo);
+
+    return {date: date, time: time, student: {
+        avatar: studentInfo["avatarURL"],
+        login: studentInfo["login"],
+        quote: studentInfo["quote"]
+    }};
 }

@@ -54,7 +54,14 @@ export const toggleTooltip = async (state = false) => {
   if (state) {
     // FIXME: You should implement or call a function to get the pixel's information
     // and display it. Make use of target.x and target.y to get the pixel's position.
-    const pixelInfo = getPixelInfo(target["x"], target["y"]);
+    const pixelInfo = (await getPixelInfo(target["x"], target["y"]));
+    console.log("Pixel Info: ", pixelInfo);
+
+    document.getElementById("tooltip-date").innerHTML = pixelInfo["date"];
+    document.getElementById("tooltip-time").innerHTML = pixelInfo["time"];
+    document.getElementById("tooltip-info-avatar").src = pixelInfo["student"]["avatar"];
+    document.getElementById("tooltip-info-login").innerHTML = pixelInfo["student"]["login"];
+    document.getElementById("tooltip-info-quote").innerHTML = pixelInfo["student"]["quote"];
   }
 };
 
