@@ -3,7 +3,8 @@
 import { calculateLayout } from "./utils";
 
 import * as streams from "../utils/streams";
-import { io } from "socket.io-client";
+import { connectStream } from "../utils/socket-communication";
+import { getConfig } from "../utils/api-communication";
 
 // Initialize the layout
 calculateLayout();
@@ -11,12 +12,9 @@ calculateLayout();
 // Create and config the socket
 const socket = streams.initSocket();
 
-socket.on("message", (msg) => { // Useful ?
-    console.log(msg.result);
-});
+// Asks for connexion and waits for server response
+await connectStream(socket);
 
-// Sends message to subscribe to a stream
-streams.subscribe(socket);
-
-// And directly disconnects bc why not
-// streams.unsubscribe(socket);
+// Get configuration
+const config = await getConfig();
+console.log(config);
