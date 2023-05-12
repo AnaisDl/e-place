@@ -1,22 +1,21 @@
 // FIXME: This is the entry point of the application, write your code here
 
+import { fetchRoomConfig, joinRoom } from "../rooms";
+import { displayCanvas } from "../rooms/canvas";
+import { initSocket } from "../utils/streams";
 import { calculateLayout } from "./utils";
-
-import * as streams from "../utils/streams";
-import { connectStream } from "../utils/socket-communication";
-import { displayCanvas, getCanvas, getConfig } from "../utils/api-communication";
 
 // Initialize the layout
 calculateLayout();
 
 // Create and config the socket
-const socket = streams.initSocket();
+const socket = initSocket();
 
 // Asks for connexion and waits for server response
-await connectStream(socket);
+await joinRoom(socket, "epi-place");
 
 // Get configuration
-const config = (await getConfig())["data"];
+const config = (await fetchRoomConfig())["data"];
 displayCanvas(config);
 console.log("Config: ", config);
 

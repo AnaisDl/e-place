@@ -14,7 +14,7 @@ export function initSocket() {
     return io(`${import.meta.env.VITE_URL}`);
 }
 
-export function subscribe(socket) {
+export function subscribe(socket, slug) {
     const message = {
         'id': myuuid,
         'method': 'subscription',
@@ -22,7 +22,7 @@ export function subscribe(socket) {
             "path": "rooms.canvas.getStream",
             "input": {
                 "json": {
-                    "roomSlug": "epi-place"
+                    "roomSlug": slug
                 }
             }
         }

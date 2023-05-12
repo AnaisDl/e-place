@@ -6,6 +6,7 @@
 // - toggleTooltip (toggle the tooltip and display the pixel's information)
 
 import $ from "jquery";
+import { getPixelInfo } from ".";
 
 const canvasContainer = $("#canvas-container")?.[0];
 const canvas = $("#canvas")?.[0];
@@ -53,6 +54,7 @@ export const toggleTooltip = async (state = false) => {
   if (state) {
     // FIXME: You should implement or call a function to get the pixel's information
     // and display it. Make use of target.x and target.y to get the pixel's position.
+    const pixelInfo = getPixelInfo(target["x"], target["y"]);
   }
 };
 
