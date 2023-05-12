@@ -5,3 +5,41 @@
 // - unsubscribe (unsubscribe from a room's stream or chat)
 // - sendMessage (send a message to a room's chat)
 
+import { io } from "socket.io-client";
+import { v4 as uuidv4 } from 'uuid';
+
+let myuuid = uuidv4();
+
+export function initSocket() {
+    return io(`${import.meta.env.VITE_URL}`);
+}
+
+export function subscribe(socket) {
+    const message = {
+        'id': myuuid,
+        'method': 'subscription',
+        'params': {
+            "path": "rooms.canvas.getStream",
+            "input": {
+                "json": {
+                    "roomSlug": "epi-place"
+                }
+            }
+        }
+    };
+
+    socket.emit("message", message);
+}
+
+export function unsubscribe(socket) {
+    const message = {
+        'id': myuuid,
+        'method': 'subscription.stop',
+    };
+
+    socket.emit("message", message);
+}
+
+export function sendMessage(msg) {
+    // TODO (step 3)
+}
