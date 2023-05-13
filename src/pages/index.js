@@ -47,9 +47,10 @@ async function commAPI() {
     await displayCanvas();
     isInitialized = true;
 
-    for (const earlyPixel of earlyPixels) { // haha it doesn't work (maybe the problem is in joinRoom())
+    for (const earlyPixel of earlyPixels) { // haha it doesn't work
         console.log("I'm in the loop");
-        updatePixelInfo(await transformPixelInfo(earlyPixel["timestamp"], earlyPixel["placedByUid"]));
+        renderCanvasUpdate(earlyPixel["color"].toString(), earlyPixel["posX"], earlyPixel["posY"]);
+        // updatePixelInfo(await transformPixelInfo(earlyPixel["timestamp"], earlyPixel["placedByUid"]));
     }
 
     // Display right room information
