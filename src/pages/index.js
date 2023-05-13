@@ -1,5 +1,6 @@
 // FIXME: This is the entry point of the application, write your code here
 
+import axios from "axios";
 import { fetchRoomConfig, joinRoom } from "../rooms";
 import { displayCanvas, updatePixelInfo } from "../rooms/canvas";
 import { transformPixelInfo } from "../rooms/canvas/conversion";

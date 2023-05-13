@@ -7,6 +7,7 @@
 
 import axios from "axios";
 import { fetchRoomConfig } from "..";
+import { displayTimer } from "../../utils/rateLimits";
 import { groupByFive, transformPixelInfo, uniToBin } from "./conversion";
 import { initCanvas, renderCanvasUpdate } from "./utils";
 
@@ -59,29 +60,6 @@ export async function updatePixelInfo(info) {
     document.getElementById("tooltip-info-quote").innerHTML = info["student"]["quote"];
 }
 
-function displayCountdown(reset) {
-    // Get the button object
-    const placeButton = document.getElementById("color-place-button");
-
-    placeButton.disabled = true;
-    let remaining = Math.ceil(parseInt(reset));
-
-    for (let i = 0; i <= remaining; i++) {
-        const countDown = setTimeout(() => {
-            const minutes = Math.floor((remaining - i) / 60);
-            const seconds = (remaining - i) - minutes * 60;
-
-            placeButton.innerHTML = `${minutes}:${(seconds < 10) ? "0" : ""}${seconds}`;
-
-            if (i === remaining) {
-                clearTimeout(countDown);
-                placeButton.innerHTML = "PLACE";
-                placeButton.disabled = false;
-            }
-        }, i * 1000);
-    }
-}
-
 export async function placePixel(pos, color) {
     // Get pixel information
     const pixelInfo = await axios.post(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`, {
@@ -92,6 +70,6 @@ export async function placePixel(pos, color) {
 
     // If we cannot make anymore request
     if (parseInt(pixelInfo.headers["x-ratelimit-remaining"]) === 0) {
-        displayCountdown(pixelInfo.headers["x-ratelimit-reset"]);
+        displayTimer(pixelInfo.headers["x-ratelimit-reset"]);
     }
 }
