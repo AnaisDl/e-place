@@ -59,6 +59,29 @@ export async function updatePixelInfo(info) {
     document.getElementById("tooltip-info-quote").innerHTML = info["student"]["quote"];
 }
 
+function displayCountdown(reset) {
+    // Get the button object
+    const placeButton = document.getElementById("color-place-button");
+
+    placeButton.disabled = true;
+    let remaining = Math.ceil(parseInt(reset));
+
+    for (let i = 0; i <= remaining; i++) {
+        const countDown = setTimeout(() => {
+            const minutes = Math.floor((remaining - i) / 60);
+            const seconds = (remaining - i) - minutes * 60;
+
+            placeButton.innerHTML = `${minutes}:${(seconds < 10) ? "0" : ""}${seconds}`;
+
+            if (i === remaining) {
+                clearTimeout(countDown);
+                placeButton.innerHTML = "PLACE";
+                placeButton.disabled = false;
+            }
+        }, i * 1000);
+    }
+}
+
 export async function placePixel(pos, color) {
     // Get pixel information
     const pixelInfo = await axios.post(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`, {
@@ -67,33 +90,8 @@ export async function placePixel(pos, color) {
         color: color
     });
 
-    console.log("New pixel info: ", pixelInfo);
-    updatePixelInfo(await transformPixelInfo(pixelInfo["data"]["timestamp"], pixelInfo["data"]["placedByUid"]));
-    renderCanvasUpdate(color.toString(), pos["x"], pos["y"]);
-
-    // Get the button object
-    const placeButton = document.getElementById("color-place-button");
-
     // If we cannot make anymore request
     if (parseInt(pixelInfo.headers["x-ratelimit-remaining"]) === 0) {
-        placeButton.disabled = "disabled";
-        let remaining = Math.ceil(parseInt(pixelInfo.headers["x-ratelimit-reset"]));
-
-        const countDown = setInterval(() => {
-            const minutes = Math.floor(remaining / 60);
-            const seconds = remaining - minutes * 60;
-
-            console.log("Remaining: ", remaining);
-
-            placeButton.innerHTML = `${minutes}:${(seconds < 10) ? "0" : ""}${seconds}`;
-
-            if (remaining === 0) {
-                clearInterval(countDown);
-                placeButton.innerHTML = "PLACE";
-                placeButton.disabled = "";
-            }
-
-            remaining--;
-        }, 1000);
+        displayCountdown(pixelInfo.headers["x-ratelimit-reset"]);
     }
 }

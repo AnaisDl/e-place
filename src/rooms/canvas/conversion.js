@@ -27,7 +27,7 @@ export function groupByFive(str) {
 }
 
 export async function transformPixelInfo(timestamp, uid) {
-    console.log("UID: ", uid);
+    console.log("UID: ", uid, ", of type: ", typeof uid);
     const date = new Date(timestamp).toLocaleDateString();
     const time = new Date(timestamp).toLocaleTimeString();
 
