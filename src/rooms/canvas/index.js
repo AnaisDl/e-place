@@ -44,7 +44,7 @@ export async function getPixelInfo(posX, posY) {
             posY: posY
         }
     }))["data"];
-    console.log(info);
+    console.log("Info: ", info);
 
     return await transformPixelInfo(info["timestamp"], info["placedByUid"]);
 }
@@ -60,13 +60,40 @@ export async function updatePixelInfo(info) {
 }
 
 export async function placePixel(pos, color) {
-    const pixelInfo = (await axios.post(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`, {
+    // Get pixel information
+    const pixelInfo = await axios.post(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`, {
         posX: pos["x"],
         posY: pos["y"],
         color: color
-    }))["data"];
+    });
 
     console.log("New pixel info: ", pixelInfo);
-    updatePixelInfo(await transformPixelInfo(pixelInfo["timestamp"], pixelInfo["placedByUid"]));
+    updatePixelInfo(await transformPixelInfo(pixelInfo["data"]["timestamp"], pixelInfo["data"]["placedByUid"]));
     renderCanvasUpdate(color.toString(), pos["x"], pos["y"]);
+
+    // Get the button object
+    const placeButton = document.getElementById("color-place-button");
+
+    // If we cannot make anymore request
+    if (parseInt(pixelInfo.headers["x-ratelimit-remaining"]) === 0) {
+        placeButton.disabled = "disabled";
+        let remaining = Math.ceil(parseInt(pixelInfo.headers["x-ratelimit-reset"]));
+
+        const countDown = setInterval(() => {
+            const minutes = Math.floor(remaining / 60);
+            const seconds = remaining - minutes * 60;
+
+            console.log("Remaining: ", remaining);
+
+            placeButton.innerHTML = `${minutes}:${(seconds < 10) ? "0" : ""}${seconds}`;
+
+            if (remaining === 0) {
+                clearInterval(countDown);
+                placeButton.innerHTML = "PLACE";
+                placeButton.disabled = "";
+            }
+
+            remaining--;
+        }, 1000);
+    }
 }

@@ -30,3 +30,8 @@ document.getElementById("room-name").innerHTML = config["metadata"]["name"];
 let description = document.getElementById("room-description");
 description.innerHTML = config["metadata"]["description"];
 description.style.display = (config["metadata"]["description"] !== null) ? "inline" : "null";
+
+// On load ?
+socket.on("pixel-update", (data) => {
+    console.log("Pixel update: ", data);
+})

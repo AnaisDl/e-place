@@ -25,7 +25,7 @@ export async function joinRoom(socket, slug) {
         });
 
         socket.on("pixel-update", async (data) => {
-            earlyPixels.push(data["data"]);
+            earlyPixels.push(data["result"]["data"]["json"]);
         });
     });
 }
