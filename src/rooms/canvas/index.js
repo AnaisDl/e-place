@@ -40,7 +40,7 @@ export async function getPixelInfo(posX, posY) {
     }))["data"];
     console.log(info);
 
-    const date = new Date(info["timestamp"]).toLocaleDateString("fr-FR");
+    const date = new Date(info["timestamp"]).toLocaleDateString();
     const time = new Date(info["timestamp"]).toLocaleTimeString("fr-FR");
 
     const studentInfo = (await axios.get(`${import.meta.env.VITE_URL}/api/students/${info["placedByUid"]}`))["data"];
@@ -51,4 +51,8 @@ export async function getPixelInfo(posX, posY) {
         login: studentInfo["login"],
         quote: studentInfo["quote"]
     }};
+}
+
+export async function placePixel() {
+    await axios.post(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`);
 }
