@@ -15,9 +15,10 @@ const socket = initSocket();
 await joinRoom(socket, "epi-place");
 
 // Get configuration
-const config = (await fetchRoomConfig())["data"];
-displayCanvas(config);
+let config = (await fetchRoomConfig())["data"];
 console.log("Config: ", config);
+
+await displayCanvas();
 
 // Display right room information
 document.getElementById("room-name").innerHTML = config["metadata"]["name"];

@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 let myuuid = uuidv4();
 
 export function initSocket() {
+    console.log("Entered initSocket()")
     return io(`${import.meta.env.VITE_URL}`);
 }
 

@@ -10,7 +10,6 @@
 import axios from "axios";
 import { subscribe } from "../utils/streams";
 
-
 export async function fetchRoomConfig() {
     return await axios.get(`${import.meta.env.VITE_URL}/api/rooms/epi-place/config`);
 }

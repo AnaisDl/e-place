@@ -6,8 +6,9 @@
 // - placePixel (place a pixel in a room)
 
 import axios from "axios";
-import { groupByFive, uniToBin } from "./conversion";
-import { initCanvas } from "./utils";
+import { fetchRoomConfig } from "..";
+import { groupByFive, transformPixelInfo, uniToBin } from "./conversion";
+import { initCanvas, renderCanvasUpdate } from "./utils";
 
 // Takes string of unicode
 // Return array of pixels
@@ -17,10 +18,15 @@ export function getCanvas(str) {
 }
 
 export async function getRawCanvas() {
+    // return await axios.get(`${import.meta.env.VITE_URL}/api/rooms/epi-place/config`);
+    
     return await axios.get(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas`);
 }
 
-export async function displayCanvas(config) {
+export async function displayCanvas() {
+    // Get config
+    let config = (await fetchRoomConfig())["data"];
+
     // Get canvas
     const canvas = (await getRawCanvas())["data"]["pixels"];
 
@@ -40,19 +46,29 @@ export async function getPixelInfo(posX, posY) {
     }))["data"];
     console.log(info);
 
-    const date = new Date(info["timestamp"]).toLocaleDateString();
-    const time = new Date(info["timestamp"]).toLocaleTimeString("fr-FR");
-
-    const studentInfo = (await axios.get(`${import.meta.env.VITE_URL}/api/students/${info["placedByUid"]}`))["data"];
-    console.log("Student info: ", studentInfo);
-
-    return {date: date, time: time, student: {
-        avatar: studentInfo["avatarURL"],
-        login: studentInfo["login"],
-        quote: studentInfo["quote"]
-    }};
+    return await transformPixelInfo(info["timestamp"], info["placedByUid"]);
 }
 
-export async function placePixel() {
-    await axios.post(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`);
+export async function updatePixelInfo(info) {
+    console.log("Pixel Info: ", info);
+
+    document.getElementById("tooltip-date").innerHTML = info["date"];
+    document.getElementById("tooltip-time").innerHTML = info["time"];
+    document.getElementById("tooltip-info-avatar").src = info["student"]["avatar"];
+    document.getElementById("tooltip-info-login").innerHTML = info["student"]["login"];
+    document.getElementById("tooltip-info-quote").innerHTML = info["student"]["quote"];
+}
+
+export async function placePixel(pos, color) {
+    const pixel = await axios.post(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`, {
+        posX: pos["x"],
+        posY: pos["y"],
+        color: color
+    }).then(async () => {
+        console.log("New pixel info: ", pixelInfo);
+        updatePixelInfo(await transformPixelInfo(pixelInfo["timestamp"], pixelInfo["placedByUid"]));
+        renderCanvasUpdate(color.toString(), pos["x"], pos["y"]);
+    }).catch(() => {
+        console.log("Tu peux pas encore placer de pixel bg, attend");
+    });
 }

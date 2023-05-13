@@ -1,3 +1,5 @@
+import axios from "axios";
+
 function decToBin(nb) { // Take decimal nb and turn it to binary str
     return nb.toString(2).padStart(8, "0");
 }
@@ -22,4 +24,19 @@ export function groupByFive(str) {
     }
 
     return pixels;
+}
+
+export async function transformPixelInfo(timestamp, uid) {
+    console.log("UID: ", uid);
+    const date = new Date(timestamp).toLocaleDateString();
+    const time = new Date(timestamp).toLocaleTimeString();
+
+    const studentInfo = (await axios.get(`${import.meta.env.VITE_URL}/api/students/${uid}`))["data"];
+    console.log("Student info: ", studentInfo);
+
+    return {date: date, time: time, student: {
+        avatar: studentInfo["avatarURL"],
+        login: studentInfo["login"],
+        quote: studentInfo["quote"]
+    }};
 }

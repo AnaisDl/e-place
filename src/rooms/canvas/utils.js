@@ -5,8 +5,9 @@
 // - getPlacementData (get the necessary data to place a pixel)
 // - toggleTooltip (toggle the tooltip and display the pixel's information)
 
+import axios from "axios";
 import $ from "jquery";
-import { getPixelInfo } from ".";
+import { displayCanvas, getPixelInfo, placePixel, updatePixelInfo } from ".";
 
 const canvasContainer = $("#canvas-container")?.[0];
 const canvas = $("#canvas")?.[0];
@@ -55,13 +56,7 @@ export const toggleTooltip = async (state = false) => {
     // FIXME: You should implement or call a function to get the pixel's information
     // and display it. Make use of target.x and target.y to get the pixel's position.
     const pixelInfo = (await getPixelInfo(target["x"], target["y"]));
-    console.log("Pixel Info: ", pixelInfo);
-
-    document.getElementById("tooltip-date").innerHTML = pixelInfo["date"];
-    document.getElementById("tooltip-time").innerHTML = pixelInfo["time"];
-    document.getElementById("tooltip-info-avatar").src = pixelInfo["student"]["avatar"];
-    document.getElementById("tooltip-info-login").innerHTML = pixelInfo["student"]["login"];
-    document.getElementById("tooltip-info-quote").innerHTML = pixelInfo["student"]["quote"];
+    await updatePixelInfo(pixelInfo);
   }
 };
 
@@ -127,6 +122,13 @@ colorPicker.addEventListener("click", () => {
   const state = colorWheelContainer.style.display;
   colorWheelContainer.style.display =
     !state || state === "none" ? "block" : "none";
+});
+
+// DOUBT ABOUT IT NEEDING TO BE WRITTEN HERE
+const placeButton = $("#color-place-button")?.[0];
+
+placeButton.addEventListener("click", () => {
+  placePixel(target, selectedColorIdx);
 });
 
 /**
