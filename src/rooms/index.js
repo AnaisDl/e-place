@@ -8,12 +8,12 @@
 // - deleteRoom (delete a room)
 
 import axios from "axios";
-import { subscribe } from "../utils/streams";
 
 export async function fetchRoomConfig() {
     return await axios.get(`${import.meta.env.VITE_URL}/api/rooms/epi-place/config`);
 }
 
+/*
 export async function joinRoom(socket, slug) {
     let earlyPixels = [];
     return new Promise((resolve, reject) => {
@@ -25,7 +25,8 @@ export async function joinRoom(socket, slug) {
         });
 
         socket.on("pixel-update", async (data) => {
-            earlyPixels.push(data["result"]["data"]["json"]);
+            
         });
     });
 }
+*/

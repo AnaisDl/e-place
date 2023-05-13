@@ -14,7 +14,7 @@ export function displayTimer(reset) {
             const minutes = Math.floor((remaining - i) / 60);
             const seconds = (remaining - i) - minutes * 60;
 
-            placeButton.innerHTML = `${minutes}:${(seconds < 10) ? "0" : ""}${seconds}`;
+            placeButton.innerHTML = `${(minutes < 10) ? "0" : ""}${minutes}:${(seconds < 10) ? "0" : ""}${seconds}`;
 
             if (i === remaining) {
                 clearTimeout(countDown);
