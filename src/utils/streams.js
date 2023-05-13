@@ -15,7 +15,7 @@ export function initSocket() {
     return io(`${import.meta.env.VITE_URL}`);
 }
 
-export function subscribe(socket, slug) {
+export async function subscribe(socket, slug) {
     const message = {
         'id': myuuid,
         'method': 'subscription',
@@ -29,7 +29,7 @@ export function subscribe(socket, slug) {
         }
     };
 
-    socket.emit("message", message);
+    await socket.emit("message", message);
 }
 
 export function unsubscribe(socket) {

@@ -13,7 +13,7 @@ calculateLayout();
 
 // Create and config the socket
 const socket = initSocket();
-subscribe(socket, "epi-place");
+await subscribe(socket, "epi-place");
 
 let earlyPixels = [];
 let isInitialized = false;
@@ -36,7 +36,7 @@ socket.on("pixel-update", (data) => {
         console.log(data);
         const pixelInfo = data["result"]["data"]["json"];
         console.log("PixelInfo: ", pixelInfo);
-        renderCanvasUpdate(pixelInfo["color"], pixelInfo["posX"], pixelInfo["posY"]);
+        renderCanvasUpdate(pixelInfo["color"].toString(), pixelInfo["posX"], pixelInfo["posY"]);
     }
 });
 
