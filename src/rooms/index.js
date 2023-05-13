@@ -15,12 +15,17 @@ export async function fetchRoomConfig() {
 }
 
 export async function joinRoom(socket, slug) {
+    let earlyPixels = [];
     return new Promise((resolve, reject) => {
         subscribe(socket, slug);
 
         socket.on("message", (msg) => {
             console.log(msg.data);
-            resolve();
+            resolve(earlyPixels);
+        });
+
+        socket.on("pixel-update", async (data) => {
+            earlyPixels.push(data["data"]);
         });
     });
 }

@@ -12,7 +12,10 @@ calculateLayout();
 const socket = initSocket();
 
 // Asks for connexion and waits for server response
-await joinRoom(socket, "epi-place");
+const earlyPixels = await joinRoom(socket, "epi-place");
+for (const earlyPixel of earlyPixels) {
+    updatePixelInfo(await transformPixelInfo(earlyPixel["timestamp"], earlyPixel["placedByUid"]));
+}
 
 // Get configuration
 let config = (await fetchRoomConfig())["data"];

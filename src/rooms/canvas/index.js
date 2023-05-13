@@ -19,7 +19,7 @@ export function getCanvas(str) {
 
 export async function getRawCanvas() {
     // return await axios.get(`${import.meta.env.VITE_URL}/api/rooms/epi-place/config`);
-    
+
     return await axios.get(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas`);
 }
 
@@ -60,15 +60,13 @@ export async function updatePixelInfo(info) {
 }
 
 export async function placePixel(pos, color) {
-    const pixel = await axios.post(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`, {
+    const pixelInfo = (await axios.post(`${import.meta.env.VITE_URL}/api/rooms/epi-place/canvas/pixels`, {
         posX: pos["x"],
         posY: pos["y"],
         color: color
-    }).then(async () => {
-        console.log("New pixel info: ", pixelInfo);
-        updatePixelInfo(await transformPixelInfo(pixelInfo["timestamp"], pixelInfo["placedByUid"]));
-        renderCanvasUpdate(color.toString(), pos["x"], pos["y"]);
-    }).catch(() => {
-        console.log("Tu peux pas encore placer de pixel bg, attend");
-    });
+    }))["data"];
+
+    console.log("New pixel info: ", pixelInfo);
+    updatePixelInfo(await transformPixelInfo(pixelInfo["timestamp"], pixelInfo["placedByUid"]));
+    renderCanvasUpdate(color.toString(), pos["x"], pos["y"]);
 }
