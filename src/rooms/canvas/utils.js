@@ -129,6 +129,9 @@ const placeButton = $("#color-place-button")?.[0];
 
 placeButton.addEventListener("click", () => {
   placePixel(target, selectedColorIdx);
+
+  let secondsPassed = 0;
+  setTimeout(() => {});
 });
 
 /**
