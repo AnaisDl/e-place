@@ -28,15 +28,16 @@ socket.on("message", (msg) => {
     }
 });
 
-socket.on("pixel-update", async (data) => {
+socket.on("pixel-update", (data) => {
     if (!isConnected) {
         earlyPixels.push(data["result"]["data"]["json"]);
     }
 
     else {
+        console.log(data);
         const pixelInfo = data["result"]["data"]["json"];
         console.log("PixelInfo: ", pixelInfo);
-        renderCanvasUpdate(pixelInfo["color"].toString(), pixelInfo["posX"], pixelInfo["posY"]);
+        renderCanvasUpdate(pixelInfo["color"], pixelInfo["posX"], pixelInfo["posY"]);
     }
 });
 
