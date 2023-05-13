@@ -16,20 +16,19 @@ const socket = initSocket();
 subscribe(socket, "epi-place");
 
 let earlyPixels = [];
-let isConnected = false;
+let isInitialized = false;
 
 // Asks for connexion and waits for server response
 // const earlyPixels = await joinRoom(socket, "epi-place");
 
 socket.on("message", (msg) => {
     if (msg["result"]["type"] === "started") {
-        isConnected = true;
         commAPI();
     }
 });
 
 socket.on("pixel-update", (data) => {
-    if (!isConnected) {
+    if (!isInitialized) {
         earlyPixels.push(data["result"]["data"]["json"]);
     }
 
@@ -46,6 +45,8 @@ async function commAPI() {
     let config = (await fetchRoomConfig())["data"];
 
     await displayCanvas();
+    isInitialized = true;
+
     for (const earlyPixel of earlyPixels) { // haha it doesn't work (maybe the problem is in joinRoom())
         console.log("I'm in the loop");
         updatePixelInfo(await transformPixelInfo(earlyPixel["timestamp"], earlyPixel["placedByUid"]));
